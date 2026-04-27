@@ -16,10 +16,7 @@ const oauthSlackRoutes = require("./routers/oauth/slack.oauth.routes");
 const oauthTeamsRoutes = require("./routers/oauth/miscrosoft.oauth.routes");
 
 app.use("/", oauthRoutes);
-app.use("/hubdb", (req,res,next)=>{
-  console.log("hubdb hit");
-  next();
-}, extensionRoutes);
+app.use("/hubdb", extensionRoutes);
 app.use("/admin", adminRoutes);
 app.use("/slack", oauthSlackRoutes);
 app.use("/teams", oauthTeamsRoutes);
