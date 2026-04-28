@@ -2,7 +2,7 @@ const cron = require('node-cron');
 const { refreshToken } = require("../controllers/oauth/oauth.controller");
 const { activeUserPresence } = require("../controllers/oauth/slack.oauth.controller");
 
-cron.schedule('*/20 * * * *', () => {
+cron.schedule('*/10 * * * *', () => {
     refreshToken();
     console.log('Refresh token every 20 minutes.');
 });
