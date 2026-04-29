@@ -13,7 +13,7 @@ const getPlanDetails = async (portalId) => {
 
     const user = rows[0].values;
 
-    const status = user.status;
+    const status = user.status.name.toLowerCase();
     const endDate = new Date(user.plan_end_date);
     const today = new Date();
 
