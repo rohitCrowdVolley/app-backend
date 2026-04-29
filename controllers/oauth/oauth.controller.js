@@ -1,6 +1,7 @@
 const axios = require("axios");
 const { addRowHubdb, getTablesRows, updateRowHubdb, deleteRowHubdb } = require("../../services/hubspot/hubspot.service.api");
 const { renderSuccessPage } = require("../../services/utils/successPage");
+const { getDateAfterDays } = require("../../services/utils/date");
 
 const handleCallback = async (req, res) => {
     const code = req.query.code;
@@ -25,16 +26,34 @@ const handleCallback = async (req, res) => {
         let alreadyExists = await getTablesRows({ tableId: process.env.HS_HUB_TABLE_ID, filter: `portal_id=${response.data.hub_id}` });
 
         if (alreadyExists.length > 0) {
-            return res.send("Already installed ✅");
+            const values = {
+                access_token: response.data.access_token,
+                refresh_token: response.data.refresh_token,
+                updated_at: getDateAfterDays(),
+            }
+            await updateRowHubdb({ values, tableId: process.env.HS_HUB_TABLE_ID, rowId: alreadyExists[0].id });
+            console.log(`Portal ${response.data.hub_id} re-installed, tokens updated.`);
         }
 
-        const values = {
-            access_token: response.data.access_token,
-            portal_id: response.data.hub_id,
-            refresh_token: response.data.refresh_token
+        else {
+            const values = {
+                access_token: response.data.access_token,
+                portal_id: response.data.hub_id,
+                refresh_token: response.data.refresh_token,
+                plan_name: "Free Trial",
+                status: "trialing",
+                plan_start_date: getDateAfterDays(),
+                plan_end_date: getDateAfterDays(30),
+                trial_used: true,
+                updated_at: getDateAfterDays(),
+            }
+            await addRowHubdb({ values, tableId: process.env.HS_HUB_TABLE_ID });
+            console.log(`Portal ${response.data.hub_id} installed and added to HubDB.`);
+
         }
 
-        await addRowHubdb({ values, tableId: process.env.HS_HUB_TABLE_ID });
+
+
         const url = `https://app.hubspot.com/connected-apps/${response.data.hub_id}/installed`;
 
         return res.send(
@@ -76,7 +95,7 @@ const refreshAccessToken = async (refreshToken) => {
 
 const refreshToken = async () => {
     try {
-        let resData = await getTablesRows({ tableId: process.env.HS_HUB_TABLE_ID });
+        let resData = await getTablesRows({ tableId: process.env.HS_HUB_TABLE_ID, filter: "status__in=active,trialing" });
         for (const res of resData) {
             try {
                 const refreshToken = res?.values?.refresh_token;
@@ -84,17 +103,25 @@ const refreshToken = async () => {
 
                 const accessToken = await refreshAccessToken(refreshToken);
                 if (accessToken?.error?.status == "BAD_REFRESH_TOKEN" || accessToken?.error?.error == "invalid_grant") {
-                    await deleteRowHubdb({ tableId: process.env.HS_HUB_TABLE_ID, rowId: res.id });
+                    await updateRowHubdb({
+                        tableId: process.env.HS_HUB_TABLE_ID, rowId: res.id, values: {
+                            status: "uninstalled",
+                            updated_at: getDateAfterDays(),
+                            refresh_token: null,
+                            access_token: null,
+                            slack_token: null
+                        },
+                    });
                     console.log(
-                        `Portal ${res?.values?.portal_id} removed`
+                        `Portal ${res?.values?.portal_id} marked as uninstalled`
                     );
 
                     continue;
                 }
                 const values = { access_token: accessToken }
 
-                updateRowHubdb({ values, tableId: process.env.HS_HUB_TABLE_ID, rowId: res.id });
-                console.log("Access token updated successfully.")
+                await updateRowHubdb({ values, tableId: process.env.HS_HUB_TABLE_ID, rowId: res.id });
+                console.log(`Portal ${res?.values?.portal_id} access token updated`);
             } catch (err) {
                 console.log(`Error on row ${res.id}:`, err.message);
                 continue;
