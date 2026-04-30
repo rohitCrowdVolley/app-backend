@@ -1,5 +1,5 @@
 const { getHubdbTable } = require("../../services/hubspot/hubspot.service.api");
-const { createPayPalOrder } = require("../../services/paypal/paypal.service.api");
+const { createPayPalOrder , capturePayPalOrder } = require("../../services/paypal/paypal.service.api");
 const { getDateAfterDays } = require("../../services/utils/date");
 const { renderSuccessPage } = require("../../services/utils/successPage");
 
@@ -36,6 +36,29 @@ const paypalOrder = async (req, res) => {
         res.send("Error creating order ❌");
     }
 }
+const paypalCapture = async (req, res) => {
+    try {
+        const { token, portalId } = req.query; 
+
+        if (!token) return res.send("Order Token is required ❌");
+
+        await capturePayPalOrder(token);
+
+        const url = `https://app.hubspot.com/connected-apps/${portalId}`;
+        
+        return res.send(
+            renderSuccessPage({
+                title: "Plan Activated",
+                message: "Your plan has been activated successfully.",
+                buttonText: "Go to Connected Apps",
+                url,
+            })
+        );
+    } catch (err) {
+        console.error("Capture Error:", err.response?.data || err.message);
+        res.status(500).send("Error capturing payment ❌");
+    }
+};
 
 const paypalWebhook = async (req, res) => {
     try {
@@ -53,15 +76,6 @@ const paypalWebhook = async (req, res) => {
 
         res.sendStatus(200);
         const url = `https://app.hubspot.com/connected-apps/${portalId}`;
-
-        return res.send(
-            renderSuccessPage({
-                title: "Plan Activated",
-                message: "Your plan has been activated successfully.",
-                buttonText: "Go to Connected Apps",
-                url,
-            })
-        );
     }
     catch (err) {
         console.log(err.message);
@@ -71,6 +85,7 @@ const paypalWebhook = async (req, res) => {
 
 module.exports = {
     paypalOrder,
+    paypalCapture,
     paypalWebhook
 
 }

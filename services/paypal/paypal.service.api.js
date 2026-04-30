@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { PAYPAL_API_BASE_URL } = require("../../config/constants");
+const { PAYPAL_API_BASE_URL , SERVER_URL } = require("../../config/constants");
 
 const getPaypalAccess = async () => {
     const tokenRes = await axios.post(`${PAYPAL_API_BASE_URL}/v1/oauth2/token`,
@@ -23,7 +23,7 @@ const createPayPalOrder = async (portalId) => {
 
     const accessToken = await getPaypalAccess();
 
-    const url = `https://app.hubspot.com/connected-apps/${portalId}`;
+    const url = `${SERVER_URL}/paypal/success?portalId=${portalId}`;
 
     const orderRes = await axios.post(
         `${PAYPAL_API_BASE_URL}/v2/checkout/orders`,
@@ -40,7 +40,7 @@ const createPayPalOrder = async (portalId) => {
             ],
             application_context: {
                 return_url: url,
-                cancel_url: url,
+                cancel_url: "https://hubattend.com/",
                 shipping_preference: "NO_SHIPPING",
                 user_action: "PAY_NOW",
             },
@@ -58,6 +58,24 @@ const createPayPalOrder = async (portalId) => {
 
 }
 
+const capturePayPalOrder = async (orderId) => {
+    const accessToken = await getPaypalAccess();
+
+    const response = await axios.post(
+        `${PAYPAL_API_BASE_URL}/v2/checkout/orders/${orderId}/capture`,
+        {},
+        {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                "Content-Type": "application/json",
+            },
+        }
+    );
+
+    return response.data;
+}
+
 module.exports = {
-    createPayPalOrder
+    createPayPalOrder,
+    capturePayPalOrder
 }
