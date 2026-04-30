@@ -63,6 +63,7 @@ const paypalCapture = async (req, res) => {
 const paypalWebhook = async (req, res) => {
     try {
         const event = req.body;
+        console.log("Received PayPal Webhook:", event);
 
         if (event.event_type === "PAYMENT.CAPTURE.COMPLETED") {
 

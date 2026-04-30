@@ -72,6 +72,7 @@ const capturePayPalOrder = async (orderId) => {
         }
     );
 
+    console.log("Capture Response:", response.data);
     return response.data;
 }
 
