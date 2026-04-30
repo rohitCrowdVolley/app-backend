@@ -2,6 +2,7 @@ const axios = require("axios");
 const { addRowHubdb, getTablesRows, updateRowHubdb, deleteRowHubdb } = require("../../services/hubspot/hubspot.service.api");
 const { renderSuccessPage } = require("../../services/utils/successPage");
 const { getDateAfterDays } = require("../../services/utils/date");
+const { HUBSPOT_API_BASE_URL } = require("../../config/constants");
 
 const handleCallback = async (req, res) => {
     const code = req.query.code;
@@ -10,7 +11,7 @@ const handleCallback = async (req, res) => {
 
     try {
         const response = await axios.post(
-            "https://api.hubapi.com/oauth/v1/token",
+            `${HUBSPOT_API_BASE_URL}/oauth/v1/token`,
             new URLSearchParams({
                 grant_type: "authorization_code",
                 client_id: process.env.HUBSPOT_CLIENT_ID,
@@ -73,7 +74,7 @@ const handleCallback = async (req, res) => {
 const refreshAccessToken = async (refreshToken) => {
     try {
         const response = await axios.post(
-            'https://api.hubspot.com/oauth/v1/token',
+            `${HUBSPOT_API_BASE_URL}/oauth/v1/token`,
             new URLSearchParams({
                 grant_type: 'refresh_token',
                 client_id: process.env.HUBSPOT_CLIENT_ID,

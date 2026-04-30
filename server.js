@@ -14,12 +14,14 @@ const extensionRoutes = require("./routers/extension/extension.routes");
 const adminRoutes = require("./routers/admin/users.admin");
 const oauthSlackRoutes = require("./routers/oauth/slack.oauth.routes");
 const oauthTeamsRoutes = require("./routers/oauth/miscrosoft.oauth.routes");
+const paypalRoutes = require("./routers/paypal/paypal.routes");
 
 app.use("/", oauthRoutes);
 app.use("/hubdb", extensionRoutes);
 app.use("/admin", adminRoutes);
 app.use("/slack", oauthSlackRoutes);
 app.use("/teams", oauthTeamsRoutes);
+app.use("/paypal", paypalRoutes);
 app.get("/", (req, res) => {
     res.send("HubSpot App Running 🚀");
 });

@@ -1,10 +1,11 @@
 const axios = require("axios");
+const { HUBSPOT_API_BASE_URL } = require("../../config/constants");
 
 const createHubspotApiClient = (
   apiKey = process.env.HS_APP_TOKEN
 ) => {
   return axios.create({
-    baseURL: "https://api.hubapi.com",
+    baseURL: HUBSPOT_API_BASE_URL,
     headers: {
       Authorization: `Bearer ${apiKey || process.env.HS_APP_TOKEN}`,
       "Content-Type": "application/json"

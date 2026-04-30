@@ -3,6 +3,7 @@ const { getTablesRows, addRowHubdb, updateRowHubdb } = require("../../services/h
 const slackRoutes = require("../../config/slackRoutes");
 const { getSlackUserByEmail, getSlackUserPresence } = require("../../services/slack/slack.service.api");
 const { renderSuccessPage } = require("../../services/utils/successPage");
+const { SLACK_API_BASE_URL } = require("../../config/constants");
 
 
 const getAccessToken = async ({ portalId }) => {
@@ -227,7 +228,7 @@ const handleSlackCallback = async (req, res) => {
 
     try {
         const { data } = await axios.post(
-            "https://slack.com/api/oauth.v2.access",
+            `${SLACK_API_BASE_URL}/oauth.v2.access`,
             new URLSearchParams({
                 grant_type: "authorization_code",
                 client_id: process.env.SLACK_CLIENT_ID,
