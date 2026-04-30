@@ -5,6 +5,7 @@ const { renderSuccessPage } = require("../../services/utils/successPage");
 
 const updatePortalPlan = async (portalId) => {
     let resData = await getHubdbTable({ tableId: process.env.HS_HUB_TABLE_ID, filter: `portal_id=${portalId}` });
+    console.log("HubDB rows for portal", portalId, ":", resData);
 
     const values = {
         plan_name: "Pro Yearly",
