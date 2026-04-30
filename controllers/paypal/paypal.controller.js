@@ -67,11 +67,10 @@ const paypalWebhook = async (req, res) => {
 
         if (event.event_type === "PAYMENT.CAPTURE.COMPLETED") {
 
-            const portalId = event.resource.custom_id;
 
-            console.log("✅ Payment received for portal:", portalId);
+            console.log("✅ Payment received for portal:", event.resource);
 
-            await updatePortalPlan(portalId);
+            // await updatePortalPlan(portalId);
 
         }
 

@@ -33,7 +33,7 @@ const createPayPalOrder = async (portalId) => {
                 {
                     amount: {
                         currency_code: "USD",
-                        value: "99.00",
+                        value: "1.00",
                     },
                     custom_id: portalId,
                 },
