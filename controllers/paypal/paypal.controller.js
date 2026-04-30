@@ -1,4 +1,4 @@
-const { getHubdbTable } = require("../../services/hubspot/hubspot.service.api");
+const { getHubdbTable, updateRowHubdb } = require("../../services/hubspot/hubspot.service.api");
 const { createPayPalOrder, capturePayPalOrder } = require("../../services/paypal/paypal.service.api");
 const { getDateAfterDays } = require("../../services/utils/date");
 const { renderSuccessPage } = require("../../services/utils/successPage");
