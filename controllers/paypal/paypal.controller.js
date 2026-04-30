@@ -1,11 +1,10 @@
-const { getHubdbTable, updateRowHubdb } = require("../../services/hubspot/hubspot.service.api");
+const { getTablesRows, updateRowHubdb } = require("../../services/hubspot/hubspot.service.api");
 const { createPayPalOrder, capturePayPalOrder } = require("../../services/paypal/paypal.service.api");
 const { getDateAfterDays } = require("../../services/utils/date");
 const { renderSuccessPage } = require("../../services/utils/successPage");
 
 const updatePortalPlan = async (portalId) => {
-    let resData = await getHubdbTable({ tableId: process.env.HS_HUB_TABLE_ID, filter: `portal_id=${portalId}` });
-    console.log("HubDB rows for portal", portalId, ":", resData);
+    let resData = await getTablesRows({ tableId: process.env.HS_HUB_TABLE_ID, filter: `portal_id=${portalId}` });
 
     const values = {
         plan_name: "Pro Yearly",
@@ -21,7 +20,6 @@ const updatePortalPlan = async (portalId) => {
         console.log(`Portal ${resData[0].portal_id} Package updated to Pro Yearly.`);
     };
 }
-
 const paypalOrder = async (req, res) => {
     try {
         const portalId = req.query.portalId;
