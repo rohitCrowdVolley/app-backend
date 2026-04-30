@@ -1,5 +1,5 @@
 const { getHubdbTable } = require("../../services/hubspot/hubspot.service.api");
-const { createPayPalOrder , capturePayPalOrder } = require("../../services/paypal/paypal.service.api");
+const { createPayPalOrder, capturePayPalOrder } = require("../../services/paypal/paypal.service.api");
 const { getDateAfterDays } = require("../../services/utils/date");
 const { renderSuccessPage } = require("../../services/utils/successPage");
 
@@ -13,7 +13,7 @@ const updatePortalPlan = async (portalId) => {
         plan_end_date: getDateAfterDays(365),
         updated_at: getDateAfterDays(),
     }
-    
+
     if (resData.length > 0) {
 
         await updateRowHubdb({ values, tableId: process.env.HS_HUB_TABLE_ID, rowId: resData[0].id });
@@ -38,14 +38,14 @@ const paypalOrder = async (req, res) => {
 }
 const paypalCapture = async (req, res) => {
     try {
-        const { token, portalId } = req.query; 
+        const { token, portalId } = req.query;
 
         if (!token) return res.send("Order Token is required ❌");
 
         await capturePayPalOrder(token);
 
         const url = `https://app.hubspot.com/connected-apps/${portalId}`;
-        
+
         return res.send(
             renderSuccessPage({
                 title: "Plan Activated",
@@ -63,19 +63,16 @@ const paypalCapture = async (req, res) => {
 const paypalWebhook = async (req, res) => {
     try {
         const event = req.body;
-        console.log("Received PayPal Webhook:", event);
-
         if (event.event_type === "PAYMENT.CAPTURE.COMPLETED") {
 
+            console.log("✅ Payment received for portal:", event.resource?.custom_id);
+            let portalId = event.resource?.custom_id;
 
-            console.log("✅ Payment received for portal:", event.resource , event.resource?.custom_id);
-
-            // await updatePortalPlan(portalId);
+            await updatePortalPlan(portalId);
 
         }
 
         res.sendStatus(200);
-        const url = `https://app.hubspot.com/connected-apps/${portalId}`;
     }
     catch (err) {
         console.log(err.message);
