@@ -30,8 +30,8 @@ const createPayPalOrder = async (portalId) => {
             purchase_units: [
                 {
                     amount: {
-                        currency_code: "JPY",
-                        value: "01.00",
+                        currency_code: "USD",
+                        value: "99.00",
                     },
                     custom_id: portalId,
                 },
