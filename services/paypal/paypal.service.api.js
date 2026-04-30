@@ -23,6 +23,8 @@ const createPayPalOrder = async (portalId) => {
 
     const accessToken = await getPaypalAccess();
 
+    const url = `https://app.hubspot.com/connected-apps/${portalId}`;
+
     const orderRes = await axios.post(
         `${PAYPAL_API_BASE_URL}/v2/checkout/orders`,
         {
@@ -36,6 +38,12 @@ const createPayPalOrder = async (portalId) => {
                     custom_id: portalId,
                 },
             ],
+            application_context: {
+                return_url: url,
+                cancel_url: url,
+                shipping_preference: "NO_SHIPPING",
+                user_action: "PAY_NOW",
+            },
         },
         {
             headers: {
@@ -44,6 +52,7 @@ const createPayPalOrder = async (portalId) => {
             },
         }
     );
+
 
     return orderRes
 
