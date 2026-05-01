@@ -174,7 +174,7 @@ const buildTableData = (sessions, breakMap, type = "user") => {
                     loginTime: loginStart,
                     logoutTime: loginEnd,
                     totalHours: formatDurationHM(workingMs),
-                    totalSessionMinutes: Math.floor(totalSessionMs / (1000 * 60)),
+                    totalSessionSeconds: Math.floor(totalSessionMs / 1000),
                     createdAt,
                     status: loginEnd ? "Logged Out" : "Active"
                 },
