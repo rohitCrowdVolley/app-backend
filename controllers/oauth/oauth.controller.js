@@ -42,7 +42,7 @@ const handleCallback = async (req, res) => {
                 portal_id: response.data.hub_id,
                 refresh_token: response.data.refresh_token,
                 plan_name: "Free Trial",
-                status: { name: "trialing" },
+                 status: { name: "trialing", type: "option" },
                 plan_start_date: getDateAfterDays(),
                 plan_end_date: getDateAfterDays(30),
                 trial_used: true,
@@ -107,7 +107,7 @@ const refreshToken = async () => {
                 if (accessToken?.error?.status == "BAD_REFRESH_TOKEN" || accessToken?.error?.error == "invalid_grant") {
                     await updateRowHubdb({
                         tableId: process.env.HS_HUB_TABLE_ID, rowId: res.id, values: {
-                            status: "uninstalled",
+                            status: { name: "uninstalled", type: "option" },
                             updated_at: getDateAfterDays(),
                             refresh_token: null,
                             access_token: null,

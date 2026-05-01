@@ -9,7 +9,7 @@ const updatePortalPlan = async (portalId) => {
 
     const values = {
         plan_name: "Pro Yearly",
-        status: { name: "active" },
+        status: { name: "active", type: "option" },
         plan_start_date: getDateAfterDays(),
         plan_end_date: getDateAfterDays(365),
         updated_at: getDateAfterDays(),
