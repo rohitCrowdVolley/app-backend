@@ -2,22 +2,26 @@ const { getTablesRows, updateRowHubdb } = require("../../services/hubspot/hubspo
 const { createPayPalOrder, capturePayPalOrder } = require("../../services/paypal/paypal.service.api");
 const { getDateAfterDays } = require("../../services/utils/date");
 const { renderSuccessPage } = require("../../services/utils/successPage");
+const { refreshAccessToken } = require("../oauth/oauth.controller");
 
 const updatePortalPlan = async (portalId) => {
     let resData = await getTablesRows({ tableId: process.env.HS_HUB_TABLE_ID, filter: `portal_id=${portalId}` });
 
     const values = {
         plan_name: "Pro Yearly",
-        status: "active",
+        status: { name: "active" },
         plan_start_date: getDateAfterDays(),
         plan_end_date: getDateAfterDays(365),
         updated_at: getDateAfterDays(),
     }
+    let refreshToken = resData[0]?.values?.refresh_token;
+    if (refreshToken) {
+        refreshAccessToken(refreshToken);
+    }
 
     if (resData.length > 0) {
-
         await updateRowHubdb({ values, tableId: process.env.HS_HUB_TABLE_ID, rowId: resData[0].id });
-        console.log(`Portal ${resData[0].portal_id} Package updated to Pro Yearly.`);
+        console.log(`Portal ${resData[0].values.portal_id} Package updated to Pro Yearly.`);
     };
 }
 const paypalOrder = async (req, res) => {

@@ -42,7 +42,7 @@ const handleCallback = async (req, res) => {
                 portal_id: response.data.hub_id,
                 refresh_token: response.data.refresh_token,
                 plan_name: "Free Trial",
-                status: "trialing",
+                status: { name: "trialing" },
                 plan_start_date: getDateAfterDays(),
                 plan_end_date: getDateAfterDays(30),
                 trial_used: true,
@@ -85,6 +85,7 @@ const refreshAccessToken = async (refreshToken) => {
         );
 
         const accessToken = response.data.access_token;
+        console.log("Access token refreshed successfully.");
         return accessToken;
     } catch (err) {
         console.log("Error fetching access token:", err.response?.data || err.message);
@@ -139,4 +140,5 @@ const refreshToken = async () => {
 module.exports = {
     handleCallback,
     refreshToken,
+    refreshAccessToken
 }
