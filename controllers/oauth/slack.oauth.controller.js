@@ -4,6 +4,7 @@ const slackRoutes = require("../../config/slackRoutes");
 const { getSlackUserByEmail, getSlackUserPresence } = require("../../services/slack/slack.service.api");
 const { renderSuccessPage } = require("../../services/utils/successPage");
 const { SLACK_API_BASE_URL, APP_ID } = require("../../config/constants");
+const { getPlanDetails } = require("../../services/middleware/checkPlan");
 
 
 const getAccessToken = async ({ portalId }) => {
@@ -151,6 +152,9 @@ const activeUserPresence = async () => {
                 const portalId = portal?.values?.portal_id;
                 const slackToken = portal?.values?.slack_token;
                 if (!portalId || !slackToken) continue;
+                const checkPlanStaus = getPlanDetails(portalId)
+
+                if (!checkPlanStaus.success || !checkPlanStaus.allowed) continue;
 
                 console.log("===== CHECKING USER PRESENCE =====");
                 console.log("portalId:", portalId);

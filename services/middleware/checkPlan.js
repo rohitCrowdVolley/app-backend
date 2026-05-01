@@ -81,5 +81,6 @@ const planStatus = async (req, res) => {
 
 module.exports = {
     checkPlan,
-    planStatus
+    planStatus,
+    getPlanDetails
 };
