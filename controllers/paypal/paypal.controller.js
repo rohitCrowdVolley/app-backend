@@ -48,7 +48,7 @@ const paypalCapture = async (req, res) => {
 
         await capturePayPalOrder(token);
 
-        const url = `https://app.hubspot.com/app/${portalId}/${APP_ID}`;
+        const url = `https://app.hubspot.com/app/${portalId}`;
 
         return res.send(
             renderSuccessPage({

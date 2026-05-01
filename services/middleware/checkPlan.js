@@ -37,7 +37,7 @@ const getPlanDetails = async (portalId) => {
 
 const checkPlan = async (req, res, next) => {
     try {
-        const portalId = req.query.portalId;
+        const portalId = req.query.portalId || req.query.state ;
 
         if (!portalId) {
             return res.status(400).json({
