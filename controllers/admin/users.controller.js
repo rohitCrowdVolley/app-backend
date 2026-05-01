@@ -154,7 +154,6 @@ const buildTableData = (sessions, breakMap, type = "user") => {
             totalBreaks: sessionBreaks.length,
             breakHours: formatDurationHM(breakMs),
             totalSessionHours: formatDurationHM(totalSessionMs),
-            totalSessionMinutes: Math.floor(totalSessionMs / (1000 * 60)),
             createdAt,
             status: loginEnd ? "Logged Out" : "Active",
             breaks: sessionBreaks
@@ -175,6 +174,7 @@ const buildTableData = (sessions, breakMap, type = "user") => {
                     loginTime: loginStart,
                     logoutTime: loginEnd,
                     totalHours: formatDurationHM(workingMs),
+                    totalSessionMinutes: Math.floor(totalSessionMs / (1000 * 60)),
                     createdAt,
                     status: loginEnd ? "Logged Out" : "Active"
                 },
