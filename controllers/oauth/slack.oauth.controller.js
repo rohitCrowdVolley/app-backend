@@ -3,7 +3,7 @@ const { getTablesRows, addRowHubdb, updateRowHubdb } = require("../../services/h
 const slackRoutes = require("../../config/slackRoutes");
 const { getSlackUserByEmail, getSlackUserPresence } = require("../../services/slack/slack.service.api");
 const { renderSuccessPage } = require("../../services/utils/successPage");
-const { SLACK_API_BASE_URL } = require("../../config/constants");
+const { SLACK_API_BASE_URL, APP_ID } = require("../../config/constants");
 
 
 const getAccessToken = async ({ portalId }) => {
@@ -256,7 +256,7 @@ const handleSlackCallback = async (req, res) => {
                 slack_token: data?.authed_user?.access_token
             }
         });
-        const url = `https://app.hubspot.com/app/${portalId}`;
+        const url = `https://app.hubspot.com/app/${portalId}/${APP_ID}`;
 
         return res.send(
             renderSuccessPage({

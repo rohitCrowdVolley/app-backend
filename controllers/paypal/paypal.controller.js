@@ -1,3 +1,4 @@
+const { APP_ID } = require("../../config/constants");
 const { getTablesRows, updateRowHubdb } = require("../../services/hubspot/hubspot.service.api");
 const { createPayPalOrder, capturePayPalOrder } = require("../../services/paypal/paypal.service.api");
 const { getDateAfterDays } = require("../../services/utils/date");
@@ -47,7 +48,7 @@ const paypalCapture = async (req, res) => {
 
         await capturePayPalOrder(token);
 
-        const url = `https://app.hubspot.com/connected-apps/${portalId}`;
+        const url = `https://app.hubspot.com/app/${portalId}/${APP_ID}`;
 
         return res.send(
             renderSuccessPage({
