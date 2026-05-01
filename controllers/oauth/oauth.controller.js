@@ -45,7 +45,7 @@ const handleCallback = async (req, res) => {
                  status: { name: "trialing", type: "option" },
                 plan_start_date: getDateAfterDays(),
                 plan_end_date: getDateAfterDays(30),
-                trial_used: true,
+                trial_used: 1,
                 updated_at: getDateAfterDays(),
             }
             await addRowHubdb({ values, tableId: process.env.HS_HUB_TABLE_ID });
