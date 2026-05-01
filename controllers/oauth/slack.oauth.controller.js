@@ -146,7 +146,7 @@ const checkActiveUserlogs = async (apiKey, slackToken) => {
 
 const activeUserPresence = async () => {
     try {
-        let portals = await getTablesRows({ tableId: process.env.HS_HUB_TABLE_ID });
+        let portals = await getTablesRows({ tableId: process.env.HS_HUB_TABLE_ID , filter: "status__in=active,trialing"});
         for (const portal of portals) {
             try {
                 const portalId = portal?.values?.portal_id;
