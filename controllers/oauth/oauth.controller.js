@@ -7,7 +7,9 @@ const { HUBSPOT_API_BASE_URL } = require("../../config/constants");
 const handleCallback = async (req, res) => {
     const code = req.query.code;
 
-    if (!code) return res.send("No code ❌");
+    if (!code) {
+    return res.status(200).send("HubAttend OAuth Endpoint Running");
+}
 
     try {
         const response = await axios.post(
