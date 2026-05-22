@@ -29,6 +29,7 @@ const handleCallback = async (req, res) => {
         let alreadyExists = await getTablesRows({ tableId: process.env.HS_HUB_TABLE_ID, filter: `portal_id=${response.data.hub_id}` });
 
         if (alreadyExists.length > 0) {
+            const existingPlan = alreadyExists[0].values.plan_name;
             const status = existingPlan == "Pro Yearly" ? { name: "active", type: "option" } : { name: "trialing", type: "option" };
 
             const values = {
