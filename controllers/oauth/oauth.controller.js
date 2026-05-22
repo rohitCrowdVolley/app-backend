@@ -27,10 +27,12 @@ const handleCallback = async (req, res) => {
         let alreadyExists = await getTablesRows({ tableId: process.env.HS_HUB_TABLE_ID, filter: `portal_id=${response.data.hub_id}` });
 
         if (alreadyExists.length > 0) {
+            const status = existingPlan == "Pro Yearly" ? { name: "active", type: "option" } : { name: "trialing", type: "option" };
+
             const values = {
                 access_token: response.data.access_token,
                 refresh_token: response.data.refresh_token,
-                status: { name: "active", type: "option" },
+                status,
                 updated_at: getDateAfterDays(),
             }
             await updateRowHubdb({ values, tableId: process.env.HS_HUB_TABLE_ID, rowId: alreadyExists[0].id });
@@ -43,7 +45,7 @@ const handleCallback = async (req, res) => {
                 portal_id: response.data.hub_id,
                 refresh_token: response.data.refresh_token,
                 plan_name: "Free Trial",
-                 status: { name: "trialing", type: "option" },
+                status: { name: "trialing", type: "option" },
                 plan_start_date: getDateAfterDays(),
                 plan_end_date: getDateAfterDays(30),
                 trial_used: 1,
