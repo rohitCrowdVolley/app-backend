@@ -30,6 +30,7 @@ const handleCallback = async (req, res) => {
             const values = {
                 access_token: response.data.access_token,
                 refresh_token: response.data.refresh_token,
+                status: { name: "active", type: "option" },
                 updated_at: getDateAfterDays(),
             }
             await updateRowHubdb({ values, tableId: process.env.HS_HUB_TABLE_ID, rowId: alreadyExists[0].id });
